@@ -26,7 +26,6 @@ export default function RootLayout({ children }) {
                     </footer>
                 </body>
             </html>
-            /
         </ClerkProvider>
     );
 }
