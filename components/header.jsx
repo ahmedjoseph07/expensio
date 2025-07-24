@@ -16,7 +16,7 @@ const Header = () => {
                         height={60}
                         className="h-12 w-auto object-contain"
                     />
-                    <span className="text-xl font-bold">Expensio</span>
+                    <span className="text-xl font-bold hidden md:inline text-blue-600">Expensio</span>
                 </Link>
                 <div className="flex items-center space-x-4">
                     <SignedIn>
@@ -25,14 +25,14 @@ const Header = () => {
                             className="flex items-center gap-2">
                             <Button
                                 variant="outline"
-                                className="cursor-pointer transition-all duration-200 hover:scale-105 hover:border-blue-500 hover:text-blue-600">
+                                >
                                 <LayoutDashboard size={18} />
-                                <span>Dashboard</span>
+                                <span className="hidden md:inline">Dashboard</span>
                             </Button>
                         </Link>
 
                         <Link href={"/transaction/create"}>
-                            <Button className="flex items-center gap-2 cursor-pointer transition-all duration-200 hover:scale-105 hover:bg-blue-600 hover:text-white">
+                            <Button>
                                 <PenBox size={18} />
                                 <span className="hidden md:inline">
                                     Add Transaction
