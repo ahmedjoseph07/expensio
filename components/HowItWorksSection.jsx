@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 const HowItWorksSection = () => {
     return (
-        <section className="py-20">
+        <section className="py-20 bg-gradient-to-br from-purple-50 via-white to-blue-50">
             <div className="container mx-auto px-4 text-center">
                 <h2 className="text-4xl md:text-5xl font-bold mb-12">
                     How <span className="text-blue-600">It Works</span>

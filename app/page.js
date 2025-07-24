@@ -1,8 +1,9 @@
-import BannerSection from "@/components/banner";
+import BannerSection from "@/components/BannerSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import StatsSection from "@/components/StatsSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import TryForFreeSection from "@/components/TryForFreeSection";
 
 export default function Home() {
     return (
@@ -12,6 +13,7 @@ export default function Home() {
             <FeaturesSection/>
             <HowItWorksSection/>
             <TestimonialsSection/>
+            <TryForFreeSection/>
         </div>
     );
 }

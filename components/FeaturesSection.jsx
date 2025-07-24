@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 const FeaturesSection = () => {
     return (
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50">
             <div className="container mx-auto px-4 text-center">
                 <h2 className="text-4xl md:text-5xl font-bold mb-12">
                     Why Choose <span className="text-blue-600">Expensio?</span>

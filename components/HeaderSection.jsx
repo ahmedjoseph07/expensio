@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { LayoutDashboard, PenBox } from "lucide-react";
 
-const Header = () => {
+const HeaderSection = () => {
     return (
         <div className="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-md z-50">
             <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -68,4 +68,4 @@ const Header = () => {
     );
 };
 
-export default Header;
+export default HeaderSection;

@@ -27,7 +27,7 @@ const TestimonialsSection = () => {
     }, []);
 
     return (
-        <section className="py-20 bg-gray-50 relative overflow-hidden">
+        <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50 relative overflow-hidden">
             <div className="container mx-auto px-4 text-center">
                 <h2 className="text-4xl md:text-5xl font-bold mb-12">
                     What Our <span className="text-blue-600">Users Say</span>
