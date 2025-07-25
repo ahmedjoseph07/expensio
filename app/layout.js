@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/HeaderSection";
 import { ClerkProvider } from "@clerk/nextjs";
 import Footer from "@/components/Footer";
+import { Toaster } from "@/components/ui/sonner"
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
                     {/* Header */}
                     <Header />
                     <main className="min-h-screen">{children}</main>
+                    <Toaster richColors/>
                     {/* Footer */}
                     <Footer />
                 </body>
