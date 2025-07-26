@@ -1,8 +1,7 @@
-"use server"
+"use server";
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { success } from "zod";
 
 const serialTransaction = (obj) => {
     const serialized = { ...obj };
@@ -44,6 +43,42 @@ export async function updateDefaultAccount(accountId) {
         revalidatePath("/dashboard");
         return { success: true, data: serialTransaction(account) };
     } catch (err) {
+        return { success: false, error: err.message };
+    }
+}
+
+export async function getAccountWithTransactions(accountId) {
+    try {
+        const { userId } = await auth();
+        if (!userId) {
+            throw new Error("Unauthorized Access");
+        }
+        const user = await db.user.findUnique({
+            where: { clerkUserId: userId },
+        });
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const account = await db.account.findUnique({
+            where: { id: accountId, userId: user.id },
+            include: {
+                transactions: {
+                    orderBy: { date: "desc" },
+                },
+                _count: {
+                    select: { transactions: true },
+                },
+            },
+        });
+
+        if (!account) return null;
+        return {
+            ...serialTransaction(account),
+            transactions: account.transactions.map(serialTransaction),
+        };
+    } catch (err) {
+        console.error("getAccountWithTransactions Error:", err);
         return { success: false, error: err.message };
     }
 }
