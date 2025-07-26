@@ -146,7 +146,7 @@ const CreateAccount = ({ children }) => {
                             <Input
                                 id="balance"
                                 type="number"
-                                step="0.01"
+                                step="0.1"
                                 placeholder="0.00"
                                 {...register("balance")}
                             />
@@ -203,6 +203,7 @@ const CreateAccount = ({ children }) => {
                                 )}
                             </Button>
                         </div>
+
                     </form>
                 </div>
             </DrawerContent>

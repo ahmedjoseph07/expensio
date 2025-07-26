@@ -5,7 +5,7 @@ import {PuffLoader} from "react-spinners";
 const DashboardLayout = () => {
     return (
         <div className="px-6">
-            <h1 className="text-5xl font-bold gradient">Dashboard</h1>
+            <h1 className="text-5xl font-bold gradient text-center md:text-start">Welcome to Dashboard</h1>
             <Suspense fallback={<PuffLoader className="mt-4" width="100%" />}>
                 <DashboardPage />
             </Suspense>

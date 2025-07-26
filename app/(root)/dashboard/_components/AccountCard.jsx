@@ -1,3 +1,5 @@
+"use client";
+import { updateDefaultAccount } from "@/actions/account";
 import {
     Card,
     CardContent,
@@ -6,11 +8,40 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import useFetch from "@/hooks/useFetch";
 import { ArrowDownCircle, ArrowUpCircle, Banknote } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
+import { toast } from "sonner";
 
 const AccountCard = ({ account }) => {
+    const {
+        loading: updateDefaultLoading,
+        fn: updateDefaultFn,
+        data: updatedAccount,
+        error,
+    } = useFetch(updateDefaultAccount);
+
+    const handleDefaultChange = async (e) => {
+        e.preventDefault();
+        if (account.isDefault) {
+            toast.warning("At least one default account required");
+            return;
+        }
+
+        await updateDefaultFn(account.id);
+    };
+
+    useEffect(() => {
+        if (updatedAccount?.success) {
+            toast.success("Default account updated successfully");
+        }
+    }, [updatedAccount, updateDefaultLoading]);
+    useEffect(() => {
+        if (error) {
+            toast.error(error.message || "Failed to update default account");
+        }
+    }, [error]);
     return (
         <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl p-2">
             <Link href={`/account/${account.id}`}>
@@ -26,7 +57,11 @@ const AccountCard = ({ account }) => {
                         <span className="text-sm text-muted-foreground">
                             Make Default
                         </span>
-                        <Switch checked={account.isDefault}/>
+                        <Switch
+                            checked={account.isDefault}
+                            onClick={handleDefaultChange}
+                            disabled={updateDefaultLoading}
+                        />
                     </div>
                 </CardHeader>
 

@@ -94,3 +94,5 @@ export async function getUserAccounts() {
     const serializedAccount = accounts.map(serialTransaction);
     return serializedAccount;
 }
+
+
