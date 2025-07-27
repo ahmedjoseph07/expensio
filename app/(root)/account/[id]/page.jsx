@@ -7,7 +7,6 @@ import { PuffLoader } from "react-spinners";
 const AccountPage = async ({ params }) => {
     const { id } = params;
     const accountData = await getAccountWithTransactions(id);
-    console.log(id)
 
     if (!accountData) {
         notFound();
@@ -15,31 +14,52 @@ const AccountPage = async ({ params }) => {
 
     const { transactions, ...account } = accountData;
 
-    console.log(accountData)
     return (
-        <div className="p-6">
-            {/* Account Details */}
-            <div>
-                <h1>{account.name}</h1>
-                <p>
-                    {account.type.charAt(0) +
-                        account.type.slice(1).toLowerCase()}{" "}
-                    Account
+        <div className="p-6 space-y-8">
+            {/* Account Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-800">
+                        {account.name}
+                    </h1>
+                    <p className="text-sm text-gray-500">
+                        {account.type.charAt(0) +
+                            account.type.slice(1).toLowerCase()}{" "}
+                        Account
+                    </p>
+                </div>
+                <div className="text-right">
+                    <div className="text-3xl font-semibold text-blue-600">
+                        ${parseFloat(account.balance).toFixed(2)}
+                    </div>
+                    <p className="text-sm text-gray-500">
+                        {account._count.transactions} Transactions
+                    </p>
+                </div>
+            </div>
+
+            {/* Chart Section Placeholder */}
+            {/* Add chart component here if needed */}
+            <div className="rounded-lg border p-4 bg-white shadow-sm">
+                <p className="text-gray-500 text-sm text-center">
+                    Chart Placeholder (Coming Soon)
                 </p>
             </div>
 
-            {/* Transactions */}
-            <div>
-                <div>${parseFloat(account.balance).toFixed(2)}</div>
-                <p>{account._count.transactions} Transactions</p>
-            </div>
-
-            {/* Chart Section*/}
-
             {/* Transaction Table */}
-            <Suspense fallback={<PuffLoader className="mt-4" width="100%" />}>
-                <TransactionTable transactions={transactions}/>
-            </Suspense>
+            <div className="rounded-lg border p-4 bg-white shadow-sm">
+                <h2 className="text-lg font-semibold mb-4 text-gray-800">
+                    Recent Transactions
+                </h2>
+                <Suspense
+                    fallback={
+                        <div className="flex justify-center py-8">
+                            <PuffLoader color="#2563eb" size={60} />
+                        </div>
+                    }>
+                    <TransactionTable transactions={transactions} />
+                </Suspense>
+            </div>
         </div>
     );
 };
