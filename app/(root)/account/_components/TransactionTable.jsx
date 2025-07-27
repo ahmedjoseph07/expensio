@@ -87,6 +87,28 @@ const TransactionTable = ({ transactions }) => {
                 (transaction) => transaction.type === typeFilter
             );
         }
+
+        // Sorting
+        result.sort((a,b)=>{
+            let comp = 0;
+            switch(sortConfig.field){
+                case "date":
+                    comp = new Date(a.date) - new Date(b.date)
+                    break;
+                case "category":
+                    comp = a.category.localeCompare(b.category);
+                    break;
+                case "amount": 
+                    comp = a.amount - b.amount;
+                    break;
+                default:
+                    comp = 0;
+            }
+
+            return sortConfig.direction === "asc" ? comp : - comp;
+        })
+
+
         return result;
     }, [transactions, search, typeFilter, recurringFilter, sortConfig]);
 
