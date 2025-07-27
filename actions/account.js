@@ -82,3 +82,75 @@ export async function getAccountWithTransactions(accountId) {
         return { success: false, error: err.message };
     }
 }
+
+export async function bulkDeleteTransactions(transactionIds) {
+    try {
+        const { userId } = await auth();
+        if (!userId) throw new Error("Unauthorized Access");
+
+        const user = await db.user.findUnique({
+            where: { clerkUserId: userId },
+        });
+        if (!user) throw new Error("User not found");
+
+        const transactions = await db.transaction.findMany({
+            where: {
+                id: { in: transactionIds },
+                userId: user.id,
+            },
+        });
+
+        if (!transactions.length) {
+            throw new Error("No valid transactions found to delete.");
+        }
+
+        const accountBalanceChanges = transactions.reduce(
+            (acc, transaction) => {
+                const amount = +transaction.amount; // coerce to number
+                const change =
+                    transaction.type === "EXPENSE" ? amount : -amount;
+                acc[transaction.accountId] =
+                    (acc[transaction.accountId] || 0) + change;
+                return acc;
+            },
+            {}
+        );
+
+        let deletedResult;
+        await db.$transaction(async (t) => {
+            deletedResult = await t.transaction.deleteMany({
+                where: {
+                    id: { in: transactionIds },
+                    userId: user.id,
+                },
+            });
+
+            for (const [accountId, balanceChange] of Object.entries(
+                accountBalanceChanges
+            )) {
+                await t.account.update({
+                    where: { id: accountId },
+                    data: {
+                        balance: { increment: balanceChange },
+                    },
+                });
+            }
+        });
+
+        // Revalidate dashboard and affected accounts
+        revalidatePath("/dashboard");
+        Object.keys(accountBalanceChanges).forEach((accountId) =>
+            revalidatePath(`/account/${accountId}`)
+        );
+
+        return {
+            success: true,
+            deletedCount: deletedResult?.count || 0,
+        };
+    } catch (err) {
+        return {
+            success: false,
+            error: err.message,
+        };
+    }
+}

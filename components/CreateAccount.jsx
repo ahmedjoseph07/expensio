@@ -27,6 +27,7 @@ import useFetch from "@/hooks/useFetch";
 import { createAccount } from "@/actions/dashboard";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { PuffLoader } from "react-spinners";
 
 const CreateAccount = ({ children }) => {
     const [open, setOpen] = useState(false);
@@ -182,11 +183,11 @@ const CreateAccount = ({ children }) => {
 
                         {/* Action Buttons */}
                         <div className="flex gap-2">
-                            <DrawerClose>
+                            <DrawerClose asChild>
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    className="flex-1">
+                                    className="hover:text-red-500 hover:border-red-500">
                                     Cancel
                                 </Button>
                             </DrawerClose>
@@ -195,7 +196,7 @@ const CreateAccount = ({ children }) => {
                             >
                                 {createAccountLoading ? (
                                     <>
-                                        <Loader className="h-4 w-4 animate-spin" />
+                                        <Loader className="animate-spin"></Loader>
                                         Creating Account
                                     </>
                                 ) : (

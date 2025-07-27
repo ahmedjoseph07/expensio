@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
     Table,
     TableBody,
@@ -20,6 +20,7 @@ import {
     ChevronDown,
     ChevronUp,
     Clock,
+    Loader,
     MoreHorizontalIcon,
     RefreshCcwDot,
     Search,
@@ -44,6 +45,20 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import useFetch from "@/hooks/useFetch";
+import { bulkDeleteTransactions } from "@/actions/account";
+import { toast } from "sonner";
+import { BarLoader, PuffLoader } from "react-spinners";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const INTERVALS = {
     DAILY: "Daily",
@@ -62,6 +77,23 @@ const TransactionTable = ({ transactions }) => {
         field: "date",
         direction: "desc",
     });
+
+    const {
+        loading: deleteLoading,
+        fn: deleteFn,
+        data: deleted,
+    } = useFetch(bulkDeleteTransactions);
+
+    const handleBulkDelete = async () => {
+        await deleteFn(selectedIds);
+        setSelectedIds([]);
+    };
+
+    useEffect(() => {
+        if (deleted && !deleteLoading) {
+            toast.success("Transactions deleted successfully");
+        }
+    }, [deleted, deleteLoading]);
 
     const filteredAndSortedTransactions = useMemo(() => {
         let result = [...transactions];
@@ -89,25 +121,24 @@ const TransactionTable = ({ transactions }) => {
         }
 
         // Sorting
-        result.sort((a,b)=>{
+        result.sort((a, b) => {
             let comp = 0;
-            switch(sortConfig.field){
+            switch (sortConfig.field) {
                 case "date":
-                    comp = new Date(a.date) - new Date(b.date)
+                    comp = new Date(a.date) - new Date(b.date);
                     break;
                 case "category":
                     comp = a.category.localeCompare(b.category);
                     break;
-                case "amount": 
+                case "amount":
                     comp = a.amount - b.amount;
                     break;
                 default:
                     comp = 0;
             }
 
-            return sortConfig.direction === "asc" ? comp : - comp;
-        })
-
+            return sortConfig.direction === "asc" ? comp : -comp;
+        });
 
         return result;
     }, [transactions, search, typeFilter, recurringFilter, sortConfig]);
@@ -140,8 +171,6 @@ const TransactionTable = ({ transactions }) => {
         );
     };
 
-    const handleBulkDelete = () => {};
-
     const handleClear = () => {
         setSearch("");
         setTypeFilter("");
@@ -151,6 +180,9 @@ const TransactionTable = ({ transactions }) => {
 
     return (
         <div className="space-y-4">
+            {deleteLoading && (
+                <BarLoader className="my-3 text-blue-500" width={"100%"} />
+            )}
             {/*  Search and Fiter */}
             <div className="flex flex-col sm:flex-row gap-4">
                 {/* Search */}
@@ -198,15 +230,50 @@ const TransactionTable = ({ transactions }) => {
 
                     <div className="flex gap-2">
                         {selectedIds?.length > 0 && (
-                            <div className="flex justify-center gap-2">
-                                <Button
-                                    onClick={handleBulkDelete}
-                                    className="cursor-pointer"
-                                    size="sm"
-                                    variant="destructive">
-                                    <Trash className="h-4 w-4" />
-                                    Delete {selectedIds.length} Selected{" "}
-                                </Button>
+                            <div className="flex justify-center gap-2 ">
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                        className="cursor-pointer"
+                                            size="sm"
+                                            variant="destructive"
+                                            disabled={deleteLoading}>
+                                            {deleteLoading ? (
+                                                <>
+                                                    <Loader className="h-4 w-4 animate-spin" />
+                                                    Deleting...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Trash className="h-4 w-4" />
+                                                    Delete {selectedIds.length}{" "}
+                                                    Selected
+                                                </>
+                                            )}
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Are you sure?
+                                            </AlertDialogTitle>
+                                            <p>
+                                                This action will permanently
+                                                delete {selectedIds.length}{" "}
+                                                transactions.
+                                            </p>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={handleBulkDelete}>
+                                                Delete
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </div>
                         )}
 
@@ -402,7 +469,14 @@ const TransactionTable = ({ transactions }) => {
                                                         }>
                                                         Update
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem className="cursor-pointer text-red-600">
+                                                    <DropdownMenuItem
+                                                        className="cursor-pointer text-red-600"
+                                                        onClick={() =>
+                                                            deleteFn([
+                                                                transaction.id,
+                                                            ])
+                                                        }>
+                                                            
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

@@ -2,10 +2,11 @@ import { getAccountWithTransactions } from "@/actions/account";
 import { notFound } from "next/navigation";
 import React, { Suspense } from "react";
 import TransactionTable from "../_components/TransactionTable";
-import { PuffLoader } from "react-spinners";
+import { FadeLoader, PuffLoader } from "react-spinners";
+import { Loader, Loader2 } from "lucide-react";
 
 const AccountPage = async ({ params }) => {
-    const { id } = params;
+    const { id } = await params;
     const accountData = await getAccountWithTransactions(id);
 
     if (!accountData) {
@@ -54,7 +55,7 @@ const AccountPage = async ({ params }) => {
                 <Suspense
                     fallback={
                         <div className="flex justify-center py-8">
-                            <PuffLoader color="#2563eb" size={60} />
+                            <FadeLoader />
                         </div>
                     }>
                     <TransactionTable transactions={transactions} />
