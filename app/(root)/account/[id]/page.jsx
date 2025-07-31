@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 import TransactionTable from "../_components/TransactionTable";
 import { FadeLoader, PuffLoader } from "react-spinners";
 import { Loader, Loader2 } from "lucide-react";
+import TransactionChart from "../_components/TransactionChart";
 
 const AccountPage = async ({ params }) => {
     const { id } = await params;
@@ -39,13 +40,15 @@ const AccountPage = async ({ params }) => {
                 </div>
             </div>
 
-            {/* Chart Section Placeholder */}
-            {/* Add chart component here if needed */}
-            <div className="rounded-lg border p-4 bg-white shadow-sm">
-                <p className="text-gray-500 text-sm text-center">
-                    Chart Placeholder (Coming Soon)
-                </p>
-            </div>
+            {/* Chart Section */}
+            <Suspense
+                fallback={
+                    <div className="flex justify-center py-8">
+                        <FadeLoader />
+                    </div>
+                }>
+                <TransactionChart transactions={transactions} />
+            </Suspense>
 
             {/* Transaction Table */}
             <div className="rounded-lg border p-4 bg-white shadow-sm">

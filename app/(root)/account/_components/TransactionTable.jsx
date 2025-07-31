@@ -238,6 +238,7 @@ const TransactionTable = ({ transactions }) => {
                                             size="sm"
                                             variant="destructive"
                                             disabled={deleteLoading}>
+                                            
                                             {deleteLoading ? (
                                                 <>
                                                     <Loader className="h-4 w-4 animate-spin" />
@@ -264,10 +265,11 @@ const TransactionTable = ({ transactions }) => {
                                             </p>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                            <AlertDialogCancel>
+                                            <AlertDialogCancel variant="outline" className="hover:text-red-500 hover:border-red-500">
                                                 Cancel
                                             </AlertDialogCancel>
-                                            <AlertDialogAction
+                                            <AlertDialogAction 
+                                            className="bg-red-500"
                                                 onClick={handleBulkDelete}>
                                                 Delete
                                             </AlertDialogAction>

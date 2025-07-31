@@ -12,7 +12,7 @@ const buttonVariants = cva(
                 default:
                     "flex items-center gap-2 cursor-pointer transition-all duration-200 hover:scale-[1.02] bg-blue-600 text-white",
                 destructive:
-                    "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+                    "bg-destructive cursor-pointer transition-all duration-200 hover:scale-[1.02] text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
                 outline:
                     "border cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:border-blue-500 hover:text-blue-600 shadow-xs dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
                 secondary:
