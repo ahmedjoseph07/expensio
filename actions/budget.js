@@ -48,7 +48,7 @@ export async function getCurrentBudget(accountId) {
                 amount: true,
             },
         });
-
+        
         return {
             budget: budget
                 ? { ...budget, amount: budget.amount.toNumber() }

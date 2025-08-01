@@ -10,15 +10,15 @@ const HeaderSection = async() => {
     return (
         <div className="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-md z-50">
             <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
-                <Link href="/" className="cursor-pointer flex items-center justify-center gap-2">
+                <Link href="/" className="cursor-pointer flex items-center justify-center">
                     <Image
                         src={"/logo.png"}
                         alt="expensio logo"
                         width={200}
                         height={60}
-                        className="h-12 w-auto object-contain"
+                        className="h-10 w-auto object-contain"
                     />
-                    <span className="text-xl font-bold hidden md:inline text-blue-600">Expensio</span>
+                    <span className="text-xl font-bold hidden md:block gradient pt-2">Expensio</span>
                 </Link>
                 <div className="flex items-center space-x-4">
                     <SignedIn>

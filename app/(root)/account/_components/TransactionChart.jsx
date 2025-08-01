@@ -26,7 +26,7 @@ const RANGES = {
     "1M": { label: "Last Month", days: 30 },
     "3M": { label: "Last 3 Months", days: 90 },
     "6M": { label: "Last 6 Months", days: 180 },
-    ALL: { label: "ALL Time", days: null },
+    ALL: { label: "All Time", days: null },
 };
 
 const TransactionChart = ({ transactions }) => {
@@ -58,10 +58,18 @@ const TransactionChart = ({ transactions }) => {
             }
             return acc;
         }, {});
+        console.log(grouped)
 
-        return Object.values(grouped).sort(
-            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        );
+        return Object.values(grouped)
+            .map((item) => ({
+                ...item,
+                income: parseFloat(item.income.toFixed(2)),
+                expense: parseFloat(item.expense.toFixed(2)),
+            }))
+            .sort(
+                (a, b) =>
+                    new Date(a.date).getTime() - new Date(b.date).getTime()
+            );
     }, [transactions, dateRange]);
 
     return (

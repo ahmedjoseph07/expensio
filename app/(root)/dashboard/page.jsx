@@ -9,7 +9,7 @@ import BudgetProgress from "./_components/BudgetProgress";
 
 const DashboardPage = async () => {
     const accounts = await getUserAccounts();
-    const defaultAccount = accounts?.find((account) => account.isDefault);
+    const defaultAccount = accounts?.find((account) => account?.isDefault);
 
     let budgetData = null;
 
@@ -19,16 +19,19 @@ const DashboardPage = async () => {
 
     return (
         <div>
-            {/* Progress */}
-            {defaultAccount && (
-                <BudgetProgress
-                    initialBudget={budgetData?.budget}
-                    currentExpenses={budgetData?.currentExpenses || 0 }
-                />
-            )}
+            {/*Budget Progress */}
+            <div className="my-12">
+                {defaultAccount && (
+                    <BudgetProgress
+                        initialBudget={budgetData?.budget}
+                        currentExpenses={budgetData?.currentExpenses || 0}
+                    />
+                )}
+            </div>
+
             {/* Budget Overview */}
 
-            {/* Accounts */}
+            {/* Accounts Cards */}
             <div className="my-8">
                 {/* Accounts Grid */}
                 <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

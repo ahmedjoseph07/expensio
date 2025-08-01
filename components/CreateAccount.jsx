@@ -25,7 +25,7 @@ import {
 import { Switch } from "./ui/switch";
 import useFetch from "@/hooks/useFetch";
 import { createAccount } from "@/actions/dashboard";
-import { Loader } from "lucide-react";
+import { Loader, UserRoundPen, UserRoundPenIcon, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { PuffLoader } from "react-spinners";
 
@@ -93,7 +93,7 @@ const CreateAccount = ({ children }) => {
                             </label>
                             <Input
                                 id="name"
-                                placeholder="Checking"
+                                placeholder="Enter Account Name"
                                 {...register("name")}
                             />
                             {errors.name && (
@@ -188,6 +188,7 @@ const CreateAccount = ({ children }) => {
                                     type="button"
                                     variant="outline"
                                     className="hover:text-red-500 hover:border-red-500">
+                                        <XCircle/>
                                     Cancel
                                 </Button>
                             </DrawerClose>
@@ -197,10 +198,14 @@ const CreateAccount = ({ children }) => {
                                 {createAccountLoading ? (
                                     <>
                                         <Loader className="animate-spin"></Loader>
+                                        
                                         Creating Account
                                     </>
                                 ) : (
+                                    <>
+                                    <UserRoundPenIcon/>
                                     "Create Account"
+                                    </>
                                 )}
                             </Button>
                         </div>
