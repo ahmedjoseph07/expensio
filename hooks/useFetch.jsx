@@ -17,7 +17,7 @@ const useFetch = (cb)=>{
             setError(null)
         } catch (err) {
             setError(err);
-            toast.error(error.message)
+            toast.error(err.message)
         }finally{
             setLoading(false)
         }

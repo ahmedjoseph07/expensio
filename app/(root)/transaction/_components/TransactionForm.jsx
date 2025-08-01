@@ -276,7 +276,7 @@ const AddTransactionForm = ({ accounts }) => {
                     {transactionLoading ? (
                         <>
                             <Loader className="animate-spin"></Loader>{" "}
-                            "Creating..."
+                            Creating Transaction
                         </>
                     ) : (
                         "Create Transaction"

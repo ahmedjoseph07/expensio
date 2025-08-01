@@ -204,7 +204,7 @@ const CreateAccount = ({ children }) => {
                                 ) : (
                                     <>
                                     <UserRoundPenIcon/>
-                                    "Create Account"
+                                    Create Account
                                     </>
                                 )}
                             </Button>

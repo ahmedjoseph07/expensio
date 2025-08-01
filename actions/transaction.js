@@ -1,5 +1,7 @@
-"use server"
+"use server";
+import aj from "@/lib/arcjet";
 import { db } from "@/lib/prisma";
+import { request } from "@arcjet/next";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
@@ -12,7 +14,29 @@ export async function createTransaction(data) {
     try {
         const { userId } = await auth();
         if (!userId) throw new Error("Unauthorized");
-        // Rate Limiting (todo)
+
+        // Rate Limiting (Arcjet)
+        const req = await request();
+        // Checking limit
+        const decision = await aj.protect(req, {
+            userId,
+            requested: 1,
+        });
+
+        if (decision.isDenied()) {
+            if (decision.reason.isRateLimit()) {
+                const { remaining, reset } = decision.reason;
+                console.error({
+                    code: "RATE LIMIT EXCEEDED",
+                    details: {
+                        remaining,
+                        resetSeconds: reset,
+                    },
+                });
+                throw new Error("Too many requests. Please try again later");
+            }
+            throw new Error("Request Blocked");
+        }
 
         const user = await db.user.findUnique({
             where: { clerkUserId: userId },
