@@ -3,7 +3,10 @@ import aj from "@/lib/arcjet";
 import { db } from "@/lib/prisma";
 import { request } from "@arcjet/next";
 import { auth } from "@clerk/nextjs/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { revalidatePath } from "next/cache";
+
+const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const serialAmount = (obj) => ({
     ...obj,
@@ -110,4 +113,66 @@ function calculateNextDate(startDate, interval) {
             break;
     }
     return date;
+}
+
+export async function scanReciept(file) {
+    try {
+        const model = genAi.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const arrayBuffer = await file.arrayBuffer();
+        const base64String = Buffer.from(arrayBuffer).toString("base64");
+
+        const prompt = `
+        Analyze this receipt image and extract the following information in JSON format:
+        - Total amount (just the number)
+        - Date (in ISO format)
+        - Description or items purchased (brief summary)
+        - Merchant/store name
+        - Suggested category (like housing,transportation,groceries,utilities,entertainment,food,shopping,healthcare,education,personal,travel,insurance,gifts,bills,other-expense or any suitable)
+
+        Only respond with valid JSON in this exact format:
+        {
+        "amount": number,
+        "date": "ISO date string",
+        "description": "string",
+        "merchantName": "string",
+        "category": "string"
+        }
+
+        If its not a recipt, return an empty object
+        `;
+
+        const result = await model.generateContent([
+            {
+                inlineData: {
+                    data: base64String,
+                    mimeType: file.type,
+                },
+            },
+            { text: prompt },
+        ]);
+
+        const response = await result.response;
+        const text = await response.text();
+        const cleanedText = text
+            .replace(/```(?:json)?\n?/g, "")
+            .replace(/```/g, "")
+            .trim();
+
+        try {
+            const data = JSON.parse(cleanedText);
+            return {
+                amount: parseFloat(data.amount) || 0,
+                date: new Date(data.date) || null,
+                description: data.description || "",
+                category: data.category || "",
+                merchantName: data.merchantName || "",
+            };
+        } catch (err) {
+            console.error("Error parsing JSON response: ", err);
+            throw new Error("Invalid response format from Gemini");
+        }
+    } catch (err) {
+        console.error("Error sacning reciept: ", err.message);
+        throw new Error("Failed to scan reciept");
+    }
 }

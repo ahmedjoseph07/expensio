@@ -1,7 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ["randomuser.me"],
+        remotePatterns:[
+            {
+                protocol:"https",
+                hostname:"randomuser.me"
+            },
+        ],
+    },
+
+    experimental:{
+        serverActions:{
+            bodySizeLimit:"5mb",
+        },
     },
 };
 

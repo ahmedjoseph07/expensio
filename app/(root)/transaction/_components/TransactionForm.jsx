@@ -26,6 +26,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import RecieptScanner from "./RecieptScanner";
 
 const AddTransactionForm = ({ accounts }) => {
     const router = useRouter();
@@ -73,8 +74,6 @@ const AddTransactionForm = ({ accounts }) => {
         await transactionFn(formData);
     };
 
-    console.log(transactionResult);
-
     useEffect(() => {
         if (transactionResult?.success && !transactionLoading) {
             toast.success("Transaction created successfully");
@@ -83,10 +82,28 @@ const AddTransactionForm = ({ accounts }) => {
         }
     }, [transactionResult?.success, transactionLoading]);
 
+    const handleScanComplete = (scannedData) => {
+        if(scannedData){
+            setValue("amount", scannedData.amount.toString());
+            setValue("date", new Date(scannedData.date));
+            if(scannedData.description){
+                setValue("description", scannedData.description);
+            }
+            if(scannedData.category){
+                setValue("category", scannedData.category);
+            }
+        }
+    };
+
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
             className="bg-white mb-6 rounded-xl space-y-6 max-w-3xl mx-auto w-full">
+            {/* AI Scanner */}
+            <div className="place-self-end">
+                <RecieptScanner onScanComplete={handleScanComplete} />
+            </div>
+
             {/* Type */}
             <div className="space-y-2">
                 <label className="text-sm font-medium">Type</label>
@@ -275,8 +292,8 @@ const AddTransactionForm = ({ accounts }) => {
                     <DollarSign className="mr-2 h-4 w-4" />{" "}
                     {transactionLoading ? (
                         <>
-                            <Loader className="animate-spin"></Loader>{" "}
-                            Creating Transaction
+                            <Loader className="animate-spin"></Loader> Creating
+                            Transaction
                         </>
                     ) : (
                         "Create Transaction"
