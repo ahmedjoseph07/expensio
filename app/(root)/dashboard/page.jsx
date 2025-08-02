@@ -1,11 +1,13 @@
-import { getUserAccounts } from "@/actions/dashboard";
+import { getDashboardData, getUserAccounts } from "@/actions/dashboard";
 import CreateAccount from "@/components/CreateAccount";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
-import React from "react";
+import React, { Suspense } from "react";
 import AccountCard from "./_components/AccountCard";
 import { getCurrentBudget } from "@/actions/budget";
 import BudgetProgress from "./_components/BudgetProgress";
+import DashboardOverview from "./_components/DashboardOverview";
+import { FadeLoader } from "react-spinners";
 
 const DashboardPage = async () => {
     const accounts = await getUserAccounts();
@@ -16,6 +18,8 @@ const DashboardPage = async () => {
     if (defaultAccount) {
         budgetData = await getCurrentBudget(defaultAccount.id);
     }
+
+    const transactions = await getDashboardData();
 
     return (
         <div>
@@ -30,6 +34,13 @@ const DashboardPage = async () => {
             </div>
 
             {/* Budget Overview */}
+            <Suspense
+                fallback={
+                    <div className="flex justify-center py-8">
+                        <FadeLoader />
+                    </div>}>
+                    <DashboardOverview accounts={accounts} transactions={transactions || []}/>
+            </Suspense>
 
             {/* Accounts Cards */}
             <div className="my-8">
