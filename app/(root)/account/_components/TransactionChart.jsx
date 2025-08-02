@@ -58,7 +58,6 @@ const TransactionChart = ({ transactions }) => {
             }
             return acc;
         }, {});
-        console.log(grouped)
 
         return Object.values(grouped)
             .map((item) => ({

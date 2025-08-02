@@ -1,5 +1,5 @@
 "use client";
-import { createTransaction } from "@/actions/transaction";
+import { createTransaction, updateTransaction } from "@/actions/transaction";
 import { transactionSchema } from "@/app/lib/formSchema";
 import useFetch from "@/hooks/useFetch";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,12 +24,18 @@ import { format } from "date-fns";
 import { CalendarIcon, DollarSign, Loader, XCircle } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import RecieptScanner from "./RecieptScanner";
 
-const AddTransactionForm = ({ accounts }) => {
+const AddTransactionForm = ({
+    accounts,
+    editMode = false,
+    initialData = null,
+}) => {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const editId = searchParams.get("edit");
 
     const {
         register,
@@ -41,22 +47,37 @@ const AddTransactionForm = ({ accounts }) => {
         reset,
     } = useForm({
         resolver: zodResolver(transactionSchema),
-        defaultValues: {
-            type: "EXPENSE",
-            amount: "",
-            description: "",
-            accountId: accounts.find((ac) => ac.isDefault)?.id,
-            date: new Date(),
-            isRecurring: false,
-            recurringInterval: undefined,
-        },
+
+        defaultValues:
+            editMode && initialData
+                ? {
+                      type: initialData.type,
+                      amount: initialData.amount.toString(),
+                      description: initialData.description,
+                      accountId: initialData.accountId,
+                      category: initialData.category,
+                      date: new Date(initialData.date),
+                      isRecurring: initialData.isRecurring,
+                      ...(initialData.recurringInterval && {
+                          recurringInterval: initialData.recurringInterval,
+                      }),
+                  }
+                : {
+                      type: "EXPENSE",
+                      amount: "",
+                      description: "",
+                      accountId: accounts.find((ac) => ac.isDefault)?.id,
+                      date: new Date(),
+                      isRecurring: false,
+                      recurringInterval: undefined,
+                  },
     });
 
     const {
         loading: transactionLoading,
         fn: transactionFn,
         data: transactionResult,
-    } = useFetch(createTransaction);
+    } = useFetch(editMode ? updateTransaction : createTransaction);
 
     const type = watch("type");
     const isRecurring = watch("isRecurring");
@@ -71,25 +92,33 @@ const AddTransactionForm = ({ accounts }) => {
         if (!formData.isRecurring) {
             delete formData.recurringInterval;
         }
-        await transactionFn(formData);
+        if (editMode) {
+            await transactionFn(editId, formData);
+        } else {
+            await transactionFn(formData);
+        }
     };
 
     useEffect(() => {
         if (transactionResult?.success && !transactionLoading) {
-            toast.success("Transaction created successfully");
+            toast.success(
+                editMode
+                    ? "Transaction updated successfully"
+                    : "Transaction created successfully"
+            );
             reset();
             router.push(`/account/${transactionResult.data.accountId}`);
         }
-    }, [transactionResult?.success, transactionLoading]);
+    }, [transactionResult?.success, transactionLoading, editMode]);
 
     const handleScanComplete = (scannedData) => {
-        if(scannedData){
+        if (scannedData) {
             setValue("amount", scannedData.amount.toString());
             setValue("date", new Date(scannedData.date));
-            if(scannedData.description){
+            if (scannedData.description) {
                 setValue("description", scannedData.description);
             }
-            if(scannedData.category){
+            if (scannedData.category) {
                 setValue("category", scannedData.category);
             }
         }
@@ -268,11 +297,6 @@ const AddTransactionForm = ({ accounts }) => {
                             <SelectItem value="YEARLY">Yearly</SelectItem>
                         </SelectContent>
                     </Select>
-                    {/* {errors.recurringInterval && (
-                        <p className="text-sm text-red-500">
-                            {errors.recurringInterval.message}
-                        </p>
-                    )} */}
                 </div>
             )}
 
@@ -292,9 +316,13 @@ const AddTransactionForm = ({ accounts }) => {
                     <DollarSign className="mr-2 h-4 w-4" />{" "}
                     {transactionLoading ? (
                         <>
-                            <Loader className="animate-spin"></Loader> Creating
-                            Transaction
+                            <Loader className="animate-spin"></Loader>
+                            {editMode
+                                ? "Editing Transaction"
+                                : "Creating Transaction"}
                         </>
+                    ) : editMode ? (
+                        "Update Transaction"
                     ) : (
                         "Create Transaction"
                     )}
