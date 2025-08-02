@@ -321,6 +321,7 @@ const TransactionTable = ({ transactions }) => {
                                         ))}
                                 </div>
                             </TableHead>
+                            <TableHead className="cursor-pointer">Description</TableHead>
                             <TableHead
                                 className="cursor-pointer"
                                 onClick={() => handleSort("category")}>
@@ -385,6 +386,7 @@ const TransactionTable = ({ transactions }) => {
                                                 "PP"
                                             )}
                                         </TableCell>
+                                        <TableCell>{transaction.description}</TableCell>
                                         <TableCell>
                                             <Badge variant="outline">
                                                 {transaction.category
