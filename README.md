@@ -50,7 +50,6 @@ actions/
  ├─seed.js             # For generating dummy transactions
  ├─send-email.js       # Email related actions (APIs)
  ├─transaction.js      # Transaction related actions (APIs)
-  
 app/
  ├─ (auth)             # Authentication
     ├─ Sign-in/        # Sign-in compon
