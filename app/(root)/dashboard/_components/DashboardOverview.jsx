@@ -86,7 +86,7 @@ export default function DashboardOverview({
             </Card>
 
             {/* Pie Chart */}
-            <Card className="shadow-md cursor-pointer sm:col-span-3 lg:col-span-2 ">
+            <Card className="shadow-md hover:shadow-lg cursor-pointer sm:col-span-3 lg:col-span-2 ">
                 <CardHeader>
                     <CardTitle className="text-lg font-semibold">
                         Income vs Expenses
@@ -119,7 +119,7 @@ export default function DashboardOverview({
             </Card>
 
             {/* Recent Transactions */}
-            <Card className="shadow-md sm:col-span-3 lg:col-span-1">
+            <Card className="shadow-md hover:shadow-lg cursor-pointer sm:col-span-3 lg:col-span-1">
                 <CardHeader>
                     <CardTitle className="text-lg font-semibold">
                         Recent Transactions
