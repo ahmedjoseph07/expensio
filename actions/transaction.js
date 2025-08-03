@@ -1,5 +1,6 @@
 "use server";
 import aj from "@/lib/arcjet";
+import { getOrCreateUser } from "@/lib/getOrCreateUser";
 import { db } from "@/lib/prisma";
 import { request } from "@arcjet/next";
 import { auth } from "@clerk/nextjs/server";
@@ -178,13 +179,15 @@ export async function scanReciept(file) {
 }
 
 export async function getTransaction(id) {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    // const { userId } = await auth();
+    // if (!userId) throw new Error("Unauthorized");
 
-    const user = await db.user.findUnique({
-        where: { clerkUserId: userId },
-    });
-    if (!user) throw new Error("User not found");
+    // const user = await db.user.findUnique({
+    //     where: { clerkUserId: userId },
+    // });
+    // if (!user) throw new Error("User not found");
+
+    const user = await getOrCreateUser();
 
     const transaction = await db.transaction.findUnique({
         where: {
@@ -200,13 +203,15 @@ export async function getTransaction(id) {
 
 export async function updateTransaction(id, data) {
     try {
-        const { userId } = await auth();
-        if (!userId) throw new Error("Unauthorized");
+        // const { userId } = await auth();
+        // if (!userId) throw new Error("Unauthorized");
 
-        const user = await db.user.findUnique({
-            where: { clerkUserId: userId },
-        });
-        if (!user) throw new Error("User not found");
+        // const user = await db.user.findUnique({
+        //     where: { clerkUserId: userId },
+        // });
+        // if (!user) throw new Error("User not found");
+
+        const user = await getOrCreateUser();
 
         // Get original transaction to calculate balance change
         const originalTransaction = await db.transaction.findUnique({

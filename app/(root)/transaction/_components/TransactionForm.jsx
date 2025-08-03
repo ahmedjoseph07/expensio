@@ -264,7 +264,7 @@ const AddTransactionForm = ({
             <div className="flex justify-between items-center border p-3 rounded-lg">
                 <div>
                     <p className="text-sm font-medium">Recurring Transaction</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-gray-500">
                         Set as a recurring transaction
                     </p>
                 </div>
@@ -318,7 +318,7 @@ const AddTransactionForm = ({
                         <>
                             <Loader className="animate-spin"></Loader>
                             {editMode
-                                ? "Editing Transaction"
+                                ? "Updating Transaction"
                                 : "Creating Transaction"}
                         </>
                     ) : editMode ? (
