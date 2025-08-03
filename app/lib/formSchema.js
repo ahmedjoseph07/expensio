@@ -1,4 +1,3 @@
-import { RecurringInterval } from "@/lib/generated/prisma";
 import z, { string } from "zod";
 
 export const accountSchema = z.object({
