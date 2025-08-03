@@ -1,4 +1,5 @@
 "use server";
+import { getOrCreateUser } from "@/lib/getOrCreateUser";
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -17,16 +18,17 @@ const serialTransaction = (obj) => {
 
 export async function updateDefaultAccount(accountId) {
     try {
-        const { userId } = await auth();
-        if (!userId) {
-            throw new Error("Unauthorized Access");
-        }
-        const user = await db.user.findUnique({
-            where: { clerkUserId: userId },
-        });
-        if (!user) {
-            throw new Error("User not found");
-        }
+        // const { userId } = await auth();
+        // if (!userId) {
+        //     throw new Error("Unauthorized Access");
+        // }
+        // const user = await db.user.findUnique({
+        //     where: { clerkUserId: userId },
+        // });
+        // if (!user) {
+        //     throw new Error("User not found");
+        // }
+        const user = await getOrCreateUser();
 
         await db.account.updateMany({
             where: { userId: user.id, isDefault: true },
@@ -49,16 +51,18 @@ export async function updateDefaultAccount(accountId) {
 
 export async function getAccountWithTransactions(accountId) {
     try {
-        const { userId } = await auth();
-        if (!userId) {
-            throw new Error("Unauthorized Access");
-        }
-        const user = await db.user.findUnique({
-            where: { clerkUserId: userId },
-        });
-        if (!user) {
-            throw new Error("User not found");
-        }
+        // const { userId } = await auth();
+        // if (!userId) {
+        //     throw new Error("Unauthorized Access");
+        // }
+        // const user = await db.user.findUnique({
+        //     where: { clerkUserId: userId },
+        // });
+        // if (!user) {
+        //     throw new Error("User not found");
+        // }
+
+        const user = await getOrCreateUser();
 
         const account = await db.account.findUnique({
             where: { id: accountId, userId: user.id },
@@ -85,13 +89,15 @@ export async function getAccountWithTransactions(accountId) {
 
 export async function bulkDeleteTransactions(transactionIds) {
     try {
-        const { userId } = await auth();
-        if (!userId) throw new Error("Unauthorized Access");
+        // const { userId } = await auth();
+        // if (!userId) throw new Error("Unauthorized Access");
 
-        const user = await db.user.findUnique({
-            where: { clerkUserId: userId },
-        });
-        if (!user) throw new Error("User not found");
+        // const user = await db.user.findUnique({
+        //     where: { clerkUserId: userId },
+        // });
+        // if (!user) throw new Error("User not found");
+
+        const user = await getOrCreateUser();
 
         const transactions = await db.transaction.findMany({
             where: {

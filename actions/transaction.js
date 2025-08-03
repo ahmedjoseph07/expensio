@@ -42,9 +42,7 @@ export async function createTransaction(data) {
             throw new Error("Request Blocked");
         }
 
-        const user = await db.user.findUnique({
-            where: { clerkUserId: userId },
-        });
+        const user = await getOrCreateUser();
 
         if (!user) {
             throw new Error("User not found");

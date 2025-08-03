@@ -19,16 +19,17 @@ const serialTransaction = (obj) => {
 
 export async function createAccount(data) {
     try {
-        const { userId } = await auth();
-        if (!userId) {
-            throw new Error("Unauthorized Access");
-        }
-        const user = await db.user.findUnique({
-            where: { clerkUserId: userId },
-        });
-        if (!user) {
-            throw new Error("User not found");
-        }
+        // const { userId } = await auth();
+        // if (!userId) {
+        //     throw new Error("Unauthorized Access");
+        // }
+        // const user = await db.user.findUnique({
+        //     where: { clerkUserId: userId },
+        // });
+        // if (!user) {
+        //     throw new Error("User not found");
+        // }
+        const user = await getOrCreateUser();
 
         // Convert balance to Float
         const balance = parseFloat(data.balance);
