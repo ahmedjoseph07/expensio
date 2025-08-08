@@ -28,9 +28,6 @@ export default function DashboardOverview({
         .reduce((sum, t) => sum + Number(t.amount), 0);
 
 
-    // Recent transactions
-    const recentTransactions = transactions.slice(0, 5);
-
     // Pie chart data
     const pieData = [
         { name: "Income", value: Number(totalIncome.toFixed(2)) },
@@ -86,7 +83,7 @@ export default function DashboardOverview({
             </Card>
 
             {/* Pie Chart */}
-            <Card className="shadow-md hover:shadow-lg cursor-pointer sm:col-span-3 lg:col-span-2 ">
+            <Card className="shadow-md hover:shadow-lg cursor-pointer sm:col-span-3 ">
                 <CardHeader>
                     <CardTitle className="text-lg font-semibold">
                         Income vs Expenses
@@ -118,42 +115,6 @@ export default function DashboardOverview({
                 </CardContent>
             </Card>
 
-            {/* Recent Transactions */}
-            <Card className="shadow-md hover:shadow-lg cursor-pointer sm:col-span-3 lg:col-span-1">
-                <CardHeader>
-                    <CardTitle className="text-lg font-semibold">
-                        Recent Transactions
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {recentTransactions.length === 0 ? (
-                        <p className="text-sm text-gray-500">
-                            No transactions yet.
-                        </p>
-                    ) : (
-                        <ul className="divide-y divide-gray-200">
-                            {recentTransactions.map((tx) => (
-                                <li
-                                    key={tx.id}
-                                    className="flex flex-wrap items-center justify-between py-2 gap-2">
-                                    <span className="text-sm font-medium truncate max-w-[60%]">
-                                        {tx.description || tx.category}
-                                    </span>
-                                    <span
-                                        className={`text-sm font-semibold ${
-                                            tx.type === "INCOME"
-                                                ? "text-green-600"
-                                                : "text-red-600"
-                                        }`}>
-                                        {tx.type === "INCOME" ? "+" : "-"}$
-                                        {Number(tx.amount).toFixed(2)}
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </CardContent>
-            </Card>
         </div>
     );
 }
